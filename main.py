@@ -1,8 +1,9 @@
 import sys
 import time
-
 from pyo import *
 
+from dna_to_music import nucleotide_to_hz
+from seq_reading import sequences_in_file
 # Useful pyo example lines
 
 # Randomly choose from a list.
@@ -12,18 +13,21 @@ from pyo import *
 # Call repeatedly after intervals
 # p = Pattern(callback, .125)
 
+# Convert midi not to frequency
+# freqs = midiToHz([60,62,64,65,67,69,71,72])
+
 SERVER = None
 
+seq = sequences_in_file("assets/sequences/kampy_full.fasta").next()
+
+
 def play_music():
-    freqs = midiToHz([60,62,64,65,67,69,71,72])
-
-
-    wave = SineLoop(100, feedback=0.05, mul=.2).out()
+    wave = SineLoop(1000, feedback=0.05, mul=.2).out()
     def each_note():
-        wave.freq = freqs.pop(0)
-        freqs.append(wave.freq)
+        nucleo = seq.next()
+        wave.freq = nucleotide_to_hz(nucleo)
 
-    p = Pattern(each_note, .125)
+    p = Pattern(each_note, 1.0/16)
     p.play()
 
     time.sleep(100*10)
