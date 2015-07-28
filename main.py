@@ -4,6 +4,7 @@ from pyo import *
 
 from dna_to_music import nucleotide_to_hz
 from seq_reading import sequences_in_file
+
 # Useful pyo example lines
 
 # Randomly choose from a list.
@@ -22,16 +23,25 @@ seq = sequences_in_file("assets/sequences/kampy_full.fasta").next()
 
 
 def play_music():
-    wave = SineLoop(1000, feedback=0.05, mul=.2).out()
+    note_length = 1/16
+    envelope = Adsr(attack=note_length/4,
+                 decay=note_length/4,
+                 sustain=note_length/4,
+                 release=note_length/4,
+                 dur=note_length,
+                 mul=.5)
+
+    wave = SineLoop(1000, feedback=0.1, mul=envelope).out()
     def each_note():
         nucleo = seq.next()
         wave.freq = nucleotide_to_hz(nucleo)
+        envelope.play()
 
-    p = Pattern(each_note, 1.0/16)
+
+    p = Pattern(each_note, note_length)
     p.play()
 
     time.sleep(100*10)
-
 
 
 def main():

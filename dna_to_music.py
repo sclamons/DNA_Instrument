@@ -10,7 +10,6 @@ nucleotide_midi = {
 }
 
 def nucleotide_to_hz(nucleo):
-    print nucleo
     # first make it a midi.  This is cute
     midi_value = nucleotide_midi[nucleo]
     return midiToHz(midi_value)
