@@ -1,4 +1,6 @@
+import sys
 import time
+
 from pyo import *
 
 # Useful pyo example lines
@@ -10,12 +12,13 @@ from pyo import *
 # Call repeatedly after intervals
 # p = Pattern(callback, .125)
 
+SERVER = None
 
-def play_music(server):
+def play_music():
     freqs = midiToHz([60,62,64,65,67,69,71,72])
 
-    wave = SineLoop(100, feedback=0.05, mul=.2).out()
 
+    wave = SineLoop(100, feedback=0.05, mul=.2).out()
     def each_note():
         wave.freq = freqs.pop(0)
         freqs.append(wave.freq)
@@ -23,16 +26,20 @@ def play_music(server):
     p = Pattern(each_note, .125)
     p.play()
 
-    time.sleep(100.000000)
+    time.sleep(100*10)
+
 
 
 def main():
-    s = Server().boot()
-    s.start()
+    global SERVER
+    SERVER = Server().boot()
+    SERVER.start()
 
-    play_music(s)
+    play_music()
 
-    s.stop()
+    SERVER.stop()
+    SERVER.shutdown()
+    sys.exit(0)
 
 
 if __name__ == "__main__":
