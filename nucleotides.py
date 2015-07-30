@@ -20,3 +20,5 @@ def reverse_complement(seq):
     for i in range(len(seq)-1, -1, -1):
         return_seq += COMPLEMENTS[seq[i]]
     return return_seq
+
+
